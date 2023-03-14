@@ -24,10 +24,18 @@ public class Bank {
 	private void deleteAcc() {
 		System.out.print("아이디: ");
 		String id = this.scanner.next();
-		System.out.print("계좌번호: ");
-		String acc = this.scanner.next();
-		
-		this.am.deleteAccountByAcc(acc);
+		System.out.print("비밀번호: ");
+		String pw = this.scanner.next();
+
+		int index = getIndexOfUser(id, pw);
+
+		if(index!=-1) {
+			System.out.print("계좌번호: ");
+			String acc = this.scanner.next();
+
+			this.am.deleteAccountByAcc(acc);
+			this.um.getList().get(index).accs.remove(acc);
+		}
 	}
 	
 	private void withdraw() {
@@ -39,6 +47,8 @@ public class Bank {
 		
 		if(money>0) {
 			this.am.withdraw(acc, money);
+		} else {
+			System.out.println("출금에 실패했습니다.");
 		}
 	}
 	
@@ -51,6 +61,8 @@ public class Bank {
 		
 		if(money>0) {
 			this.am.deposit(acc, money);
+		} else {
+			System.out.println("입금에 실패했습니다.");
 		}
 	}
 
@@ -69,17 +81,25 @@ public class Bank {
 	private void createAcc() {
 		System.out.print("아이디: ");
 		String id = this.scanner.next();
+		System.out.print("비밀번호: ");
+		String pw = this.scanner.next();
 		
-		if(!isDuplication(id)) {
-			System.out.println("존재하지 않는 아이디입니다.");
-			return;
+		int index = getIndexOfUser(id, pw);
+		
+		if(index!=-1) {
+			if(this.um.getList().get(index).accs.size()<Account.LIMIT) {
+				System.out.print("계좌번호: ");
+				String acc = this.scanner.next();
+				
+				Account account = new Account(id, acc);
+				am.addAccount(account);
+				
+				this.um.getList().get(index).accs.add(account);
+				
+			} else {
+				System.out.println("계좌 보유 한도가 꽉 찼습니다.");
+			}
 		}
-		
-		System.out.print("계좌번호: ");
-		String acc = this.scanner.next();
-		
-		Account account = new Account(id, acc);
-		am.addAccount(account);
 	}
 
 	private void deleteUser() {
@@ -88,8 +108,10 @@ public class Bank {
 		System.out.print("비밀번호: ");
 		String pw = this.scanner.next();
 		
-		if(checkLogIn(id, pw))
+		if(checkLogIn(id, pw)) {
 			this.um.deleteUserById(id);
+			System.out.println("계정 삭제가 완료되었습니다.");
+		}
 	}
 	
 	public int getIndexOfUser(String id, String password) {
@@ -138,6 +160,8 @@ public class Bank {
 			this.um.setUser(index, user);
 			
 			System.out.println("비밀번호가 변경되었습니다.");
+		} else {
+			System.out.println("아이디와 비밀번호를 다시 확인해주세요.");
 		}
 	}
 	
@@ -154,6 +178,8 @@ public class Bank {
 		if(checkLogIn(id, pw)) {
 			User user = this.um.getUserById(id);		
 			printUserInfo(user);				
+		} else {
+			System.out.println("아이디와 비밀번호를 다시 확인해주세요.");
 		}
 	}
 	
@@ -185,6 +211,8 @@ public class Bank {
 		
 		User user = new User(name, id, password);
 		um.addUser(user);
+		
+		System.out.println("계정이 생성되었습니다.");
 	}
 	
 	private void printMenu() {

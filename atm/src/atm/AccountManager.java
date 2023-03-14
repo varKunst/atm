@@ -46,6 +46,7 @@ public class AccountManager {
 			
 			if(account.equals(userAcc)) {
 				userMoney += money;
+				this.list.get(i).setMoney(userMoney);
 			}
 		}
 	}
@@ -59,6 +60,7 @@ public class AccountManager {
 			
 			if(account.equals(userAcc) && userMoney>=money) {
 				userMoney -= money;
+				this.list.get(i).setMoney(userMoney);
 			}
 		}
 	}

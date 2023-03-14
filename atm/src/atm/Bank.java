@@ -64,7 +64,6 @@ public class Bank {
 		
 		Account account = this.am.getAccountByAcc(acc);		
 		printAccInfo(account);				
-		
 	}
 
 	private void createAcc() {

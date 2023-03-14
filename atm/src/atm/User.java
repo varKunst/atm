@@ -8,7 +8,7 @@ public class User {
 	private String id;
 	private String password;
 	
-	public ArrayList<Account> accs;
+	private ArrayList<Account> accs;
 	
 	public User(String name, String id, String password) {
 		this.name = name;
@@ -36,5 +36,13 @@ public class User {
 	
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public ArrayList<Account> getAccs() {
+		return accs;
+	}
+	
+	public void setAccs(ArrayList<Account> accs) {
+		this.accs = accs;
 	}
 }

@@ -34,7 +34,16 @@ public class Bank {
 			String acc = this.scanner.next();
 
 			this.am.deleteAccountByAcc(acc);
-			this.um.getList().get(index).accs.remove(acc);
+			
+			User user = this.um.getList().get(index);
+			int size = user.getAccs().size();
+			for(int i=0; i<size; i++) {
+				String compareAcc = user.getAccs().get(index).getAccount();
+				
+				if(acc.equals(compareAcc)) {
+					this.um.getList().get(index).getAccs().remove(i);	
+				}		
+			}
 		}
 	}
 	
@@ -77,6 +86,17 @@ public class Bank {
 		Account account = this.am.getAccountByAcc(acc);		
 		printAccInfo(account);				
 	}
+	
+	private boolean isAccDupl(String acc) {
+		for(int i=0; i<this.am.getList().size(); i++) {
+			String compareAcc = this.am.getList().get(i).getAccount();
+			
+			if(acc.equals(compareAcc))
+				return true;
+		}
+		
+		return false;
+	}
 
 	private void createAcc() {
 		System.out.print("아이디: ");
@@ -87,14 +107,20 @@ public class Bank {
 		int index = getIndexOfUser(id, pw);
 		
 		if(index!=-1) {
-			if(this.um.getList().get(index).accs.size()<Account.LIMIT) {
+			if(this.um.getList().get(index).getAccs().size()<Account.LIMIT) {
 				System.out.print("계좌번호: ");
 				String acc = this.scanner.next();
 				
 				Account account = new Account(id, acc);
-				am.addAccount(account);
 				
-				this.um.getList().get(index).accs.add(account);
+				if(!isAccDupl(acc)) {
+					am.addAccount(account);					
+
+					User user = this.um.getList().get(index);
+					this.um.getList().get(index).getAccs().add(account);	
+					
+				} else
+					System.out.println("계좌번호는 중복될 수 없습니다.");
 				
 			} else {
 				System.out.println("계좌 보유 한도가 꽉 찼습니다.");
@@ -167,6 +193,15 @@ public class Bank {
 	
 	private void printUserInfo(User user) {
 		System.out.printf("%s / %s\n", user.getName(), user.getId());
+		
+		int size = user.getAccs().size();
+		
+		for(int i=0; i<size; i++) {
+			String acc = user.getAccs().get(i).getAccount();
+			int money = user.getAccs().get(i).getMoney();
+			
+			System.out.printf("%s: %d원\n", acc, money);
+		}
 	}
 
 	private void getUserInfo() {

@@ -13,6 +13,10 @@ public class AccountManager {
 		return account;
 	}
 	
+	public void loadAcount(Account account) {
+		list.add(account);
+	}
+	
 	public Account getAccount(int index) {
 		Account account = list.get(index);		
 		Account reqObj = new Account(account.getUserId(), account.getAccNum(), account.getMoney());

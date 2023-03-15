@@ -410,11 +410,11 @@ public class Bank {
 	}
 
 	private void loadFile() {
-		this.userFile = new FileManager("userData");
-		this.accFile = new FileManager("accData");
+		this.userFile = new FileManager("userData.txt");
+		this.accFile = new FileManager("accData.txt");
 
-		String userData = this.userFile.load();
 		String accData = this.accFile.load();
+		String userData = this.userFile.load();
 		
 		String[] accArr = accData.split("\n");
 		for(int i=0; i<accArr.length; i++) {
@@ -425,8 +425,7 @@ public class Bank {
 			int money = Integer.parseInt(data[2]);
 			
 			Account account = new Account(userId, accNum, money);
-			this.am.createAccount(account);
-			this.am.setAccount(i, account);
+			this.am.loadAcount(account);
 		}
 
 		String[] userArr = userData.split("\n");
@@ -440,11 +439,11 @@ public class Bank {
 			int size = data.length;
 			ArrayList<Account> accs = new ArrayList<Account>();
 			for(int j=3; j<size; j++) {
-				Account account = this.am.getAccountByNum(data[i]);
+				Account account = this.am.getAccountByNum(data[j]);
 				accs.add(account);
 			}
 			
-			User user = new User(name, id, password);
+			User user = new User(name, id, password, accs);
 			this.um.addUser(user);
  		}
 	}

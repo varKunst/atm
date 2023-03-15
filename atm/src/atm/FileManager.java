@@ -44,7 +44,10 @@ public class FileManager {
 				this.fileReader = new FileReader(this.file);
 				this.bufferedReader = new BufferedReader(this.fileReader);
 				
-				String data = this.bufferedReader.readLine();
+				String data = "";
+				while(this.bufferedReader.ready()) {
+					data += this.bufferedReader.readLine() + "\n";
+				}
 				
 				return data;
 						

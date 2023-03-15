@@ -6,86 +6,70 @@ public class AccountManager {
 
 	private static ArrayList<Account> list = new ArrayList<Account>();
 
-	public void addAccount(Account acc) {
-		this.list.add(acc);
+	public Account createAccount(Account account) {
+		String accountNum = accNumGenerator();
+		account.setAccNum(accountNum);
+		list.add(account);
+		return account;
 	}
 	
 	public Account getAccount(int index) {
-		Account acc = this.list.get(index);
-		
-		Account reqObj = new Account(acc.getId(), acc.getAccount());
-		reqObj.setMoney(acc.getMoney());
-		
+		Account account = list.get(index);		
+		Account reqObj = new Account(account.getUserId(), account.getAccNum(), account.getMoney());
+
 		return reqObj;
 	}
 	
-	public Account getAccountByAcc(String acc) {
-		int index = -1;
-
-		int size = this.list.size();
+	public Account getAccountByNum(String accountNum) {
+		Account account = null;
 		
-		for(int i=0; i<size; i++) {
-			String userAcc = this.list.get(i).getAccount();
-
-			if(acc.equals(userAcc))
-				index = i;
+		for(Account object: list) {
+			if(object.getAccNum().equals(accountNum))
+				account = object;
 		}
 		
-		if(index!=-1)
-			return getAccount(index);
-		else
-			return new Account("존재하지 않는 계좌", "없습니다");
+		return account;
+	}
+
+	public int indexOfByNum(String accNum) {
+		int index = -1;
+		for(Account account: list) {
+			if(account.getAccNum().equals(accNum))
+				index = list.indexOf(account);
+		}
+		
+		return index;
+	}
+
+	public int getListSize() {
+		return list.size();
 	}
 	
-	public void deposit(String account, int money) {
-		int size = this.list.size();
-		
-		for(int i=0; i<size; i++) {
-			String userAcc = this.list.get(i).getAccount();
-			int userMoney = this.list.get(i).getMoney();
-			
-			if(account.equals(userAcc)) {
-				userMoney += money;
-				this.list.get(i).setMoney(userMoney);
-			}
-		}
-	}
-
-	public void withdraw(String account, int money) {
-		int size = this.list.size();
-		
-		for(int i=0; i<size; i++) {
-			String userAcc = this.list.get(i).getAccount();
-			int userMoney = this.list.get(i).getMoney();
-			
-			if(account.equals(userAcc) && userMoney>=money) {
-				userMoney -= money;
-				this.list.get(i).setMoney(userMoney);
-			}
-		}
+	public void setAccount(int index, Account account) {
+		list.set(index, account);
 	}
 	
 	public void deleteAccount(int index) {
 		this.list.remove(index);
 	}
 	
-	public void deleteAccountByAcc(String acc) {
-
-		int index = -1;
-
-		int size = this.list.size();
+	private String accNumGenerator() {
+		String num = "";
 		
-		for(int i=0; i<size; i++) {
-			String userAcc = this.list.get(i).getAccount();
-
-			if(acc.equals(userAcc))
-				index = i;
+		Random ran = new Random();
+		
+		while(true) {
+			int first = ran.nextInt(8999) + 1000;
+			int second = ran.nextInt(8999) + 1000;
+			
+			num = first + "-" + second;
+			
+			Account account = getAccountByNum(num);
+			
+			if(account==null)
+				break;
 		}
 		
-		deleteAccount(index);
-	}
-	
-	public static ArrayList<Account> getList() {
-		return list;
+		return num;
 	}
 }

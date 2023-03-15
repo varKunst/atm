@@ -6,36 +6,54 @@ public class UserManager {
 
 	private static ArrayList<User> list = new ArrayList<User>();
 
-	public void addUser(User user) {
-		this.list.add(user);
+	public User addUser(User user) {
+		
+		User check = getUserById(user.getId());
+		if(check==null) {
+			list.add(user);
+			return user;
+		}
+
+		return null;
 	}
 	
 	public User getUser(int index) {
 		User user = this.list.get(index);
 		
-		User reqObj = new User(user.getName(), user.getId(), user.getPassword());
-		reqObj.setAccs(user.getAccs());
+		User reqObj = 
+				new User(user.getName(), user.getId(), 
+						user.getPassword(), user.getAccountList());
 		return reqObj;
 	}
 	
 	public User getUserById(String id) {
-		int index = -1;
+		User user = null;
 
-		int size = this.list.size();
+		int index = indexOfById(id);
+		if(index!=-1)
+			user = getUser(index);
 		
-		for(int i=0; i<size; i++) {
-			String userId = this.list.get(i).getId();
-
-			if(id.equals(userId))
-				index = i;
-			
+		return user;
+	}
+	
+	public int indexOfById(String id) {
+		int index = -1;
+		for(User user: list) {
+			if(user.getId().equals(id))
+				index = list.indexOf(user);
 		}
 		
-		return getUser(index);
+		return index;
 	}
 	
 	public void setUser(int index, User user) {
 		this.list.set(index, user);
+	}
+
+	public void setUser(User user, Account account) {
+		int index = indexOfById(user.getId());
+		
+		list.get(index).addAccount(account);
 	}
 	
 	public void deleteUser(int index) {
@@ -43,22 +61,9 @@ public class UserManager {
 	}
 	
 	public void deleteUserById(String id) {
-
-		int index = -1;
-
-		int size = this.list.size();
+		int index = indexOfById(id);
 		
-		for(int i=0; i<size; i++) {
-			String userId = this.list.get(i).getId();
-
-			if(id.equals(userId))
-				index = i;
-		}
-		
-		deleteUser(index);
-	}
-	
-	public static ArrayList<User> getList() {
-		return list;
+		if(index!=-1)
+			deleteUser(index);
 	}
 }

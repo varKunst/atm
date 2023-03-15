@@ -37,4 +37,9 @@ public class Account {
 	public void setMoney(int money) {
 		this.money = money;
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s/%s/%d", this.userId, this.accNum, this.money);
+	}
 }

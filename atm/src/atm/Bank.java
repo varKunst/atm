@@ -10,6 +10,9 @@ public class Bank {
 	private Scanner scanner;
 	private String brandName;
 	
+	private FileManager userFile;
+	private FileManager accFile;
+	
 	private int log;
 		
 	public Bank(String name) {
@@ -29,6 +32,7 @@ public class Bank {
 		System.out.println("6. 로그아웃");
 		System.out.println("7. 회원정보관리");
 		System.out.println("8. 뱅킹업무");
+		System.out.println("9. 세이브/로드");
 		System.out.println("0. 종료");
 	}
 	
@@ -60,6 +64,7 @@ public class Bank {
 			else if(menu==6)	logOut();
 			else if(menu==7)	manageUser();
 			else if(menu==8)	taskBanking();
+			else if(menu==9)	fileIO();
 			else if(menu==0)	break;
 		}
 	}
@@ -358,5 +363,89 @@ public class Bank {
 	private void printAccInfo(Account account) {
 		System.out.printf("%s님 %d원\n", account.getUserId(), 
 				account.getMoney());
+	}
+	
+	private void fileIO() {
+		while(true) {
+			printIOMenu();
+			int menu = inputNumber();
+			
+			if(menu==1)			saveFile();
+			else if(menu==2)	loadFile();
+			else if(menu==0)	break;
+		}
+	}
+
+	private void printIOMenu() {
+		System.out.println("1. 세이브");
+		System.out.println("2. 로드");
+		System.out.println("0. 뒤로");
+	}
+
+	private void saveFile() {
+		String userData = "";
+		String accData = "";
+		
+		for(int i=0; i<this.um.getListSize(); i++) {
+			userData += um.getUser(i);
+			
+			if(i<this.um.getListSize()-1)
+				userData += "\n";
+		}
+
+		for(int i=0; i<this.am.getListSize(); i++) {
+			accData += am.getAccount(i);
+			
+			if(i<this.am.getListSize()-1)
+				accData += "\n";
+		}
+		
+		this.userFile = new FileManager("userData", userData);
+		this.accFile = new FileManager("accData", accData);
+		
+		this.userFile.save();
+		this.accFile.save();
+		
+		System.out.println("파일이 저장되었습니다.");
+	}
+
+	private void loadFile() {
+		this.userFile = new FileManager("userData");
+		this.accFile = new FileManager("accData");
+
+		String userData = this.userFile.load();
+		String accData = this.accFile.load();
+		
+		String[] accArr = accData.split("\n");
+		for(int i=0; i<accArr.length; i++) {
+			String[] data = accArr[i].split("/");
+			
+			String userId = data[0];
+			String accNum = data[1];
+			int money = Integer.parseInt(data[2]);
+			
+			Account account = new Account(userId, accNum, money);
+			this.am.createAccount(account);
+			this.am.setAccount(i, account);
+		}
+
+		String[] userArr = userData.split("\n");
+		for(int i=0; i<userArr.length; i++) {
+			String[] data = userArr[i].split("/");
+			
+			String name = data[0];
+			String id = data[1];
+			String password = data[2];
+			
+			int size = data.length;
+			ArrayList<Account> accs = new ArrayList<Account>();
+			for(int j=3; j<size; j++) {
+				Account account = this.am.getAccountByNum(data[i]);
+				accs.add(account);
+			}
+			
+			User user = new User(name, id, password);
+			this.um.addUser(user);
+ 		}
 	}
 }

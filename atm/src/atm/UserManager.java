@@ -45,6 +45,10 @@ public class UserManager {
 		
 		return index;
 	}
+
+	public int getListSize() {
+		return list.size();
+	}
 	
 	public void setUser(int index, User user) {
 		this.list.set(index, user);

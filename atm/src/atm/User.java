@@ -68,4 +68,15 @@ public class User {
 	public ArrayList<Account> getAccountList() {
 		return (ArrayList<Account>) this.accs.clone();
 	}
+	
+	@Override
+	public String toString() {
+		String output = String.format("%s/%s/%s/", this.name, this.id, this.password);
+		
+		for(Account account: accs) {
+			output += account.getAccNum() + "/";
+		}
+		
+		return output;
+	}
 }
